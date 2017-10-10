@@ -2,6 +2,7 @@ package com.rachelleignacio.githubuserrepos.network
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.util.Log
 import com.rachelleignacio.githubuserrepos.model.Repository
 import com.rachelleignacio.githubuserrepos.model.User
 import retrofit2.Call
@@ -53,6 +54,7 @@ class RemoteDataRepository private constructor() {
         val data: MutableLiveData<MutableList<Repository>> = MutableLiveData()
         githubApiService.getRepos().enqueue(object : Callback<MutableList<Repository>> {
             override fun onResponse(call: Call<MutableList<Repository>>?, response: Response<MutableList<Repository>>?) {
+                Log.d("userrepos", "RemoteDataRepo getUserRepos() onResponse(): " + response!!.body())
                 data.value = response!!.body()
             }
 
