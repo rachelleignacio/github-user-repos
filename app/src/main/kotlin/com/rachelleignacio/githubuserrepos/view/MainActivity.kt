@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
+import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             if (user != null) {
                 (findViewById<TextView>(R.id.username)).text = user.username
                 (findViewById<TextView>(R.id.bio)).text = user.bio
+                (this.findViewById<ImageView>(R.id.avatar)).clipToOutline = true
                 Glide.with(this).load(user.avatarUrlString).into(findViewById(R.id.avatar))
             }
         })
