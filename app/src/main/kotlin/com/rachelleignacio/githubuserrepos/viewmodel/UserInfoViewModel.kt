@@ -1,6 +1,8 @@
 package com.rachelleignacio.githubuserrepos.viewmodel
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import com.rachelleignacio.githubuserrepos.model.Repository
 import com.rachelleignacio.githubuserrepos.model.User
@@ -10,20 +12,35 @@ import com.rachelleignacio.githubuserrepos.network.RemoteDataRepository
  * Created by rachelleignacio on 10/6/17.
  */
 class UserInfoViewModel : ViewModel() {
-    private var user: LiveData<User>? = null
-    private var repos: LiveData<MutableList<Repository>>? = null
+    private var observableUser: LiveData<User>
+    private var observableRepoList: LiveData<MutableList<Repository>>
+
+    private var mutableUsername: MutableLiveData<String>
+
+    init {
+        val remoteDataRepository = RemoteDataRepository.getInstance()
+
+        mutableUsername = MutableLiveData()
+        mutableUsername.value = "rachelleignacio"
+
+        observableUser = Transformations.switchMap(mutableUsername, {
+            remoteDataRepository.getUserInfo(mutableUsername.value!!)
+        })
+
+        observableRepoList = Transformations.switchMap(mutableUsername, {
+            remoteDataRepository.getUserRepos(mutableUsername.value!!)
+        })
+    }
 
     fun getUserInfo(): LiveData<User> {
-        if (user == null) {
-            user = RemoteDataRepository.getInstance().getUserInfo()
-        }
-        return user!!
+        return observableUser
     }
 
     fun getUserRepos(): LiveData<MutableList<Repository>> {
-        if (repos == null) {
-            repos = RemoteDataRepository.getInstance().getUserRepos()
-        }
-        return repos!!
+        return observableRepoList
+    }
+
+    fun setUsername(username: String) {
+        mutableUsername.value = username
     }
 }
